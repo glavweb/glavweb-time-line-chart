@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Glavweb Time Line Chart</title>
+
+    <style>
+        .timeline-item {
+            height: 40px;
+        }
+
+        .timeline-item-worked {
+            background-color: green;
+        }
+
+        .timeline-item-absence {
+            background-color: red;
+        }
+
+        .timeline-item-waited {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="timeline">
+        <!-- legend bar -->
+        <div class="legend-bar"></div>
+
+        <!-- lines -->
+        <div data-timeline="user1" class="time-line"></div>
+        <div data-timeline="user2" class="time-line"></div>
+        <div data-timeline="user3" class="time-line"></div>
+
+        <!-- time bar -->
+        <div class="time-bar"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="jquery.glavweb-time-line-chart.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var data = {
+                legends: {
+                    worked: {
+                        name: 'Работал',
+                        class: 'worked'
+                    },
+                    absence: {
+                        name: 'Отсутствовал',
+                        class: 'absence'
+                    },
+                    waited: {
+                        name: 'Ожидал',
+                        class: 'waited'
+                    }
+                },
+                lines: {
+                    'user1': [
+                        ['worked', '07:40', '10:00'],
+                        ['absence', '11:00', '11:30'],
+                        ['waited', '11:30', '11:50'],
+                        ['worked', '11:50', '12:40'],
+                        ['absence', '12:40', '13:50'],
+                        ['worked', '13:50', '14:20'],
+                    ],
+                    'user2': [
+                        ['worked', '09:00', '10:50'],
+                        ['absence', '10:50', '11:50'],
+                        ['waited', '11:50', '12:00'],
+                        ['worked', '12:30', '13:50'],
+                    ],
+                    'user3': [
+                        ['worked', '07:20', '08:50'],
+                        ['waited', '09:30', '10:00'],
+                        ['absence', '10:00', '11:50'],
+                        ['worked', '12:20', '12:50'],
+                        ['absence', '12:50', '14:00'],
+                    ]
+                }
+            };
+
+            var timeLineChart = $('.timeline').glavwebTimeLineChart(data, {
+                timeBarSelector:   '.time-bar',
+                legendBarSelector: '.legend-bar',
+                step:              60,
+                width:             800
+            });
+
+            timeLineChart.drawLegendBar();
+            timeLineChart.drawTimeBar();
+            timeLineChart.drawLines();
+
+            /**
+             * Custom selectors
+             */
+            // timeLineChart.drawLegendBar('.legend-top');
+            // timeLineChart.drawTimeBar('.time-bar-bottom');
+            // timeLine.drawLine('user1', '.user-1');
+        });
+    </script>
+</body>
+</html>
