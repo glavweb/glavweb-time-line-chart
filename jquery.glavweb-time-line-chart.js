@@ -87,6 +87,60 @@
     };
 
     /**
+     * Group line by legend
+     *
+     * @param {Array}  line
+     * @param {string} orderDirection
+     * @returns {Array}
+     */
+    GlavwebTimeLineChart.prototype.groupLineByLegend = function (line, orderDirection)
+    {
+        var self = this;
+        
+        // Get grouped object
+        var groupByLegend = {};
+        var legend, startTime, endTime, diffMinutes;
+        $.each(line, function (key, timePie) {
+            legend      = timePie[0];
+            startTime   = timePie[1];
+            endTime     = timePie[2];
+            diffMinutes = self.countMinutesBetweenDates(startTime, endTime);
+
+            if (groupByLegend[legend] === undefined) {
+                groupByLegend[legend] = diffMinutes;
+            } else {
+                groupByLegend[legend] += diffMinutes;
+            }
+        });
+
+        // Transform object to array
+        var orderedArray = [];
+        var item;
+        for (item in groupByLegend) {
+            orderedArray.push({
+                'legend'       : item,
+                'totalMinutes' : groupByLegend[item]
+            });
+        }
+
+        // Sort array
+        if (orderDirection !== undefined) {
+            if (orderDirection == 'desc') {
+                orderedArray.sort(function(a, b) {
+                    return b.totalMinutes - a.totalMinutes;
+                });
+
+            } else {
+                orderedArray.sort(function(a, b) {
+                    return a.totalMinutes - b.totalMinutes;
+                });
+            }
+        }
+
+        return orderedArray;
+    };
+
+    /**
      * Get start time
      *
      * @returns {Date}
@@ -265,6 +319,63 @@
 
         var $lineElement;
         if (lineSelector !== undefined) {
+            $lineElement = this.wrapper.find(lineSelector);
+
+        } else {
+            $lineElement = this.wrapper.find('[data-timeline=\'' + lineName + '\']');
+        }
+
+        $lineElement.html(html);
+    };
+
+    /**
+     * Draw lines grouped by legend
+     *
+     * @param {string} orderDirection asc|desc
+     */
+    GlavwebTimeLineChart.prototype.drawGroupedLinesByLegend = function (orderDirection)
+    {
+        var self  = this;
+        var lines = this.getLines();
+
+        $.each(lines, function (key, line) {
+            self.drawGroupedLineByLegend(key, null, orderDirection);
+        });
+    };
+
+    /**
+     * Draw line
+     *
+     * @param {string} lineName
+     * @param {string} lineSelector
+     * @param {string} orderDirection
+     */
+    GlavwebTimeLineChart.prototype.drawGroupedLineByLegend = function (lineName, lineSelector, orderDirection)
+    {
+        lineSelector = lineSelector === undefined ? null : lineSelector;
+
+        var self         = this;
+        var minuteWidth  = this.getMinuteWidth();
+        var line         = this.lines[lineName];
+        var groupedLine  = this.groupLineByLegend(line, orderDirection);
+
+        var html  = '';
+        var legend, totalMinutes, width;
+        $.each(groupedLine, function (key, timePie) {
+            legend       = timePie['legend']
+            totalMinutes = timePie['totalMinutes'];
+            width        = Math.round(parseFloat(totalMinutes * minuteWidth) * 100) / 100;
+
+            html += '<span ' +
+                'data-timeline-legend="' + legend + '" ' +
+                'data-timeline-total-minutes="' + totalMinutes + '" ' +
+                'class="timeline-item timeline-item-' + legend + '" ' +
+                'style="width: ' + width + 'px; display: inline-block;"' +
+                '></span>';
+        });
+
+        var $lineElement;
+        if (lineSelector) {
             $lineElement = this.wrapper.find(lineSelector);
 
         } else {
