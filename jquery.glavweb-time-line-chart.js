@@ -21,8 +21,9 @@
         this.wrapper = $wrapper;
 
         this.options = $.extend({
-            timeBarSelector:   '.time-bar',
-            legendBarSelector: '.legend-bar',
+            timeBarSelector:           '.time-bar',
+            legendBarSelector:         '.legend-bar',
+            lineCommonGroupedByLegend: '.line-common-grouped-by-legend',
             step:              30,
             width:             800
         }, options);
@@ -52,6 +53,7 @@
         this.startTime  = parsedData[1];
         this.endTime    = parsedData[2];
         this.allMinutes = this.countMinutesBetweenDates(this.startTime, this.endTime);
+        this.countLines = this.sizeObject(this.lines);
     };
 
     /**
@@ -62,7 +64,8 @@
     GlavwebTimeLineChart.prototype.setWidth = function (width) {
         this.width = width;
 
-        this.minuteWidth = Math.round(parseFloat(width / this.getAllMinutes()) * 100) / 100;
+        this.minuteWidth             = Math.round(parseFloat(width / this.getAllMinutes()) * 100) / 100;
+        this.commonMinuteWidth       = Math.round(parseFloat(this.width / this.getAllMinutes() / this.countLines) * 100) / 100;
         this.timeBarStepPositionLeft = 0;
     };
 
@@ -141,6 +144,36 @@
     };
 
     /**
+     * Calculate and returns common grouped line by legend
+     *
+     * @param {string} orderDirection
+     * @returns {Object}
+     */
+    GlavwebTimeLineChart.prototype.lineCommonGroupedByLegend = function (orderDirection)
+    {
+        var self = this;
+
+        var commonGrouped = {};
+        var lines  = this.getLines();
+        $.each(lines, function (key, line) {
+            var groupedLine  = self.groupLineByLegend(line, orderDirection);
+
+            $.each(groupedLine, function (key, timePie) {
+                var legend = timePie['legend'];
+                var minutes = timePie['totalMinutes'];
+
+                if (commonGrouped[legend] !== undefined) {
+                    commonGrouped[legend] += minutes;
+                } else {
+                    commonGrouped[legend] = minutes;
+                }
+            });
+        });
+
+        return commonGrouped;
+    };
+
+    /**
      * Get start time
      *
      * @returns {Date}
@@ -171,6 +204,16 @@
     };
 
     /**
+     * Get width
+     *
+     * @returns {number}
+     */
+    GlavwebTimeLineChart.prototype.getWidth = function ()
+    {
+        return this.width;
+    };
+
+    /**
      * Get minute width
      *
      * @returns {number}
@@ -178,6 +221,16 @@
     GlavwebTimeLineChart.prototype.getMinuteWidth = function ()
     {
         return this.minuteWidth;
+    };
+
+    /**
+     * Get common minute width
+     *
+     * @returns {number}
+     */
+    GlavwebTimeLineChart.prototype.getCommonMinuteWidth = function ()
+    {
+        return this.commonMinuteWidth;
     };
 
     /**
@@ -386,6 +439,42 @@
     };
 
     /**
+     * Draw common grouped line by legend
+     *
+     * @param {string} lineSelector
+     * @param {string} orderDirection
+     */
+    GlavwebTimeLineChart.prototype.drawLineCommonGroupedByLegend = function (lineSelector, orderDirection)
+    {
+        lineSelector = lineSelector === undefined ? null : lineSelector;
+
+        var self          = this;
+        var minuteWidth   = this.getCommonMinuteWidth();
+        var commonGrouped = this.lineCommonGroupedByLegend(orderDirection);
+
+        var html  = '';
+
+        var legend, totalMinutes, width;
+        $.each(commonGrouped, function (legend, totalMinutes) {
+            width = Math.round(parseFloat(totalMinutes * minuteWidth) * 100) / 100;
+
+            html += '<span ' +
+                'data-timeline-legend="' + legend + '" ' +
+                'data-timeline-total-minutes="' + totalMinutes + '" ' +
+                'class="timeline-item timeline-item-' + legend + '" ' +
+                'style="width: ' + width + 'px; display: inline-block;"' +
+                '></span>';
+        });
+
+        var $lineElement = this.ui.lineCommonGroupedByLegend;
+        if (lineSelector !== undefined) {
+            $lineElement = this.wrapper.find(lineSelector);
+        }
+
+        $lineElement.html(html);
+    };
+
+    /**
      * Define lines, start time and end time
      * 
      * @param {Object} data
@@ -542,6 +631,24 @@
     GlavwebTimeLineChart.prototype.countMinutesBetweenDates = function (startTime, endTime)
     {
         return Math.abs(endTime - startTime) / 60000;
+    };
+
+    /**
+     * Count minutes
+     *
+     * @param {Object} object
+     * @returns {number}
+     */
+    GlavwebTimeLineChart.prototype.sizeObject = function (object)
+    {
+        var size = 0, key;
+        for (key in object) {
+            if (object.hasOwnProperty(key)) {
+                size++;
+            }
+        }
+
+        return size;
     };
 
     /**
