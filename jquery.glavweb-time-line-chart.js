@@ -486,15 +486,18 @@
         var endTime   = timeData[1];
         var lines     = {};
 
-        var legend, sliceStartTime, sliceEndTime, slicePrevEndTime;
+        var legend, startTimeParse, endTimeParse, sliceStartTime, sliceEndTime, slicePrevEndTime;
         $.each(data.lines, function (lineKey, line) {
             lines[lineKey] = [];
             slicePrevEndTime = null;
 
             $.each(line, function (key, slice) {
                 legend         = slice[0];
-                sliceStartTime = new Date('1970-01-01 ' + slice[1]);
-                sliceEndTime   = new Date('1970-01-01 ' + slice[2]);
+                startTimeParse = slice[1].split(':');
+                endTimeParse   = slice[2].split(':');
+
+                sliceStartTime = new Date(1970, 0, 1, startTimeParse[0], startTimeParse[1]);
+                sliceEndTime   = new Date(1970, 0, 1, endTimeParse[0], endTimeParse[1]);
 
                 if (!slicePrevEndTime) {
                     if (startTime && sliceStartTime > startTime) {
@@ -551,11 +554,14 @@
         var startTime = null;
         var endTime   = null;
 
-        var sliceStartTime, sliceEndTime;
+        var startTimeParse, endTimeParse, sliceStartTime, sliceEndTime;
         $.each(data.lines, function (lineKey, line) {
             $.each(line, function (key, slice) {
-                sliceStartTime = new Date('1970-01-01 ' + slice[1]);
-                sliceEndTime   = new Date('1970-01-01 ' + slice[2]);
+                startTimeParse = slice[1].split(':');
+                endTimeParse   = slice[2].split(':');
+
+                sliceStartTime = new Date(1970, 0, 1, startTimeParse[0], startTimeParse[1]);
+                sliceEndTime   = new Date(1970, 0, 1, endTimeParse[0], endTimeParse[1]);
 
                 // Define start time
                 if (!startTime) {
