@@ -1,0 +1,21 @@
+{
+  "name": "glavweb-time-line-chart",
+  "version": "0.1.1",
+  "homepage": "https://github.com/glavweb/glavweb-time-line-chart",
+  "authors": [
+    "Andrey Nilov"
+  ],
+  "description": "The library creates time line chart.",
+  "main": "jquery.glavweb-time-line-chart.js",
+  "keywords": [
+    "timeline",
+    "chart"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.8.3"
+  }
+}
