@@ -9,16 +9,20 @@
             height: 40px;
         }
 
-        .timeline-item-worked {
+        .timeline-item-callout {
             background-color: green;
         }
 
-        .timeline-item-absence {
+        .timeline-item-callin {
             background-color: red;
         }
 
-        .timeline-item-waited {
+        .timeline-item-callinadd {
             background-color: yellow;
+        }
+
+        .timeline-item-free {
+            background-color: blue;
         }
     </style>
 </head>
@@ -35,6 +39,7 @@
         <div data-timeline="user1" class="time-line"></div>
         <div data-timeline="user2" class="time-line"></div>
         <div data-timeline="user3" class="time-line"></div>
+        <div data-timeline="user4" class="time-line"></div>
 
         <!-- time bar -->
         <div class="time-bar"></div>
@@ -47,40 +52,51 @@
         $(document).ready(function () {
             var data = {
                 legends: {
-                    worked: {
-                        name: 'Работал',
-                        class: 'worked'
+                    callout: {
+                        name: 'Call Out',
+                        class: 'callout'
                     },
-                    absence: {
-                        name: 'Отсутствовал',
-                        class: 'absence'
+                    callin: {
+                        name: 'Call In',
+                        class: 'callin'
                     },
-                    waited: {
-                        name: 'Ожидал',
-                        class: 'waited'
+                    callinadd: {
+                        name: 'Call In Add',
+                        class: 'callinadd'
+                    },
+                    free: {
+                        name: 'Free',
+                        class: 'free'
                     }
                 },
                 lines: {
                     'user1': [
-                        ['worked', '07:40', '10:00'],
-                        ['absence', '11:00', '11:30'],
-                        ['waited', '11:30', '11:50'],
-                        ['worked', '11:50', '12:40'],
-                        ['absence', '12:40', '13:50'],
-                        ['worked', '13:50', '14:20'],
+                        ['callout', '07:00', '8:00'],
+                        ['callin', '11:00', '11:30'],
+                        ['callinadd', '11:30', '11:50'],
+                        ['free', '11:50', '12:40'],
+                        ['callinadd', '12:40', '13:50'],
+                        ['callout', '13:50', '14:00']
                     ],
                     'user2': [
-                        ['worked', '09:00', '10:50'],
-                        ['absence', '10:50', '11:50'],
-                        ['waited', '11:50', '12:00'],
-                        ['worked', '12:30', '13:50'],
+                        ['callin', '09:00', '10:50'],
+                        ['callout', '10:50', '11:50'],
+                        ['free', '11:50', '12:00'],
+                        ['callinadd', '12:30', '13:50']
                     ],
                     'user3': [
-                        ['worked', '07:20', '08:50'],
-                        ['waited', '09:30', '10:00'],
-                        ['absence', '10:00', '11:50'],
-                        ['worked', '12:20', '12:50'],
-                        ['absence', '12:50', '14:00'],
+                        ['callinadd', '07:20', '08:50'],
+                        ['free', '09:30', '10:00'],
+                        ['callinadd', '10:00', '11:50'],
+                        ['callout', '12:20', '12:50'],
+                        ['callin', '12:50', '14:00'],
+                        ['callout', '14:20', '15:00']
+                    ],
+                    'user4': [
+                        ['callout', '07:00', '8:00'],
+                        ['callin', '11:00', '11:30'],
+                        ['callinadd', '11:30', '11:50'],
+                        ['free', '11:50', '12:40']
                     ]
                 }
             };
@@ -99,9 +115,9 @@
             /**
              * Group lines
              */
-            // timeLineChart.drawGroupedLinesByLegend('asc');
-            // timeLineChart.drawGroupedLinesByLegend('desc');
-            // timeLineChart.drawLineCommonGroupedByLegend('.common-grouped', 'desc');
+//             timeLineChart.drawGroupedLinesByLegend('asc');
+//             timeLineChart.drawGroupedLinesByLegend('desc');
+//             timeLineChart.drawLineCommonGroupedByLegend('.line-common-grouped-by-legend', 'desc');
 
             /**
              * Custom selectors

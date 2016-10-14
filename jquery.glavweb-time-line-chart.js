@@ -65,7 +65,6 @@
         this.width = width;
 
         this.minuteWidth             = Math.round(parseFloat(width / this.getAllMinutes()) * 100) / 100;
-        this.commonMinuteWidth       = Math.round(parseFloat(this.width / this.getAllMinutes() / this.countLines) * 100) / 100;
         this.timeBarStepPositionLeft = 0;
     };
 
@@ -224,13 +223,13 @@
     };
 
     /**
-     * Get common minute width
+     * Get count lines
      *
      * @returns {number}
      */
-    GlavwebTimeLineChart.prototype.getCommonMinuteWidth = function ()
+    GlavwebTimeLineChart.prototype.getCountLines = function ()
     {
-        return this.commonMinuteWidth;
+        return this.countLines;
     };
 
     /**
@@ -449,7 +448,7 @@
         lineSelector = lineSelector === undefined ? null : lineSelector;
 
         var self          = this;
-        var minuteWidth   = this.getCommonMinuteWidth();
+        var minuteWidth   = this.getMinuteWidth() / this.getCountLines();
         var commonGrouped = this.lineCommonGroupedByLegend(orderDirection);
 
         var html  = '';
