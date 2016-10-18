@@ -93,9 +93,10 @@
      *
      * @param {Array}  line
      * @param {string} orderDirection
+     * @param {Object} legendWeight
      * @returns {Array}
      */
-    GlavwebTimeLineChart.prototype.groupLineByLegend = function (line, orderDirection)
+    GlavwebTimeLineChart.prototype.groupLineByLegend = function (line, orderDirection, legendWeight)
     {
         var self = this;
         
@@ -127,15 +128,40 @@
 
         // Sort array
         if (orderDirection !== undefined) {
-            if (orderDirection == 'desc') {
-                orderedArray.sort(function(a, b) {
-                    return b.totalMinutes - a.totalMinutes;
-                });
+            switch (orderDirection) {
+                case 'desc':
+                    orderedArray.sort(function(a, b) {
+                        return b.totalMinutes - a.totalMinutes;
+                    });
 
-            } else {
-                orderedArray.sort(function(a, b) {
-                    return a.totalMinutes - b.totalMinutes;
-                });
+                    break;
+
+                case 'asc':
+                    orderedArray.sort(function(a, b) {
+                        return a.totalMinutes - b.totalMinutes;
+                    });
+
+                    break;
+
+                case 'legend':
+                    orderedArray.sort(function(a, b) {
+                        if (legendWeight[a.legend] === undefined) {
+                            return 1;
+                        }
+
+                        if (legendWeight[b.legend] === undefined) {
+                            return -1;
+                        }
+
+                        if (legendWeight[a.legend] > legendWeight[b.legend]) {
+                            return -1;
+
+                        } else {
+                            return 1;
+                        }
+                    });
+
+                    break;
             }
         }
 
@@ -384,14 +410,15 @@
      * Draw lines grouped by legend
      *
      * @param {string} orderDirection asc|desc
+     * @param {Object} legendWeight
      */
-    GlavwebTimeLineChart.prototype.drawGroupedLinesByLegend = function (orderDirection)
+    GlavwebTimeLineChart.prototype.drawGroupedLinesByLegend = function (orderDirection, legendWeight)
     {
         var self  = this;
         var lines = this.getLines();
 
         $.each(lines, function (key, line) {
-            self.drawGroupedLineByLegend(key, null, orderDirection);
+            self.drawGroupedLineByLegend(key, null, orderDirection, legendWeight);
         });
     };
 
@@ -401,15 +428,16 @@
      * @param {string} lineName
      * @param {string} lineSelector
      * @param {string} orderDirection
+     * @param {Object} legendWeight
      */
-    GlavwebTimeLineChart.prototype.drawGroupedLineByLegend = function (lineName, lineSelector, orderDirection)
+    GlavwebTimeLineChart.prototype.drawGroupedLineByLegend = function (lineName, lineSelector, orderDirection, legendWeight)
     {
         lineSelector = lineSelector === undefined ? null : lineSelector;
 
         var self         = this;
         var minuteWidth  = this.getMinuteWidth();
         var line         = this.lines[lineName];
-        var groupedLine  = this.groupLineByLegend(line, orderDirection);
+        var groupedLine  = this.groupLineByLegend(line, orderDirection, legendWeight);
 
         var html  = '';
         var legend, totalMinutes, width;
