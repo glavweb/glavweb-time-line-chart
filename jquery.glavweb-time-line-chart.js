@@ -172,16 +172,17 @@
      * Calculate and returns common grouped line by legend
      *
      * @param {string} orderDirection
+     * @param {Object} legendWeight
      * @returns {Object}
      */
-    GlavwebTimeLineChart.prototype.lineCommonGroupedByLegend = function (orderDirection)
+    GlavwebTimeLineChart.prototype.lineCommonGroupedByLegend = function (orderDirection, legendWeight)
     {
         var self = this;
 
         var commonGrouped = {};
         var lines  = this.getLines();
         $.each(lines, function (key, line) {
-            var groupedLine  = self.groupLineByLegend(line, orderDirection);
+            var groupedLine  = self.groupLineByLegend(line, orderDirection, legendWeight);
 
             $.each(groupedLine, function (key, timePie) {
                 var legend = timePie['legend'];
@@ -470,14 +471,15 @@
      *
      * @param {string} lineSelector
      * @param {string} orderDirection
+     * @param {Object} legendWeight
      */
-    GlavwebTimeLineChart.prototype.drawLineCommonGroupedByLegend = function (lineSelector, orderDirection)
+    GlavwebTimeLineChart.prototype.drawLineCommonGroupedByLegend = function (lineSelector, orderDirection, legendWeight)
     {
         lineSelector = lineSelector === undefined ? null : lineSelector;
 
         var self          = this;
         var minuteWidth   = this.getMinuteWidth() / this.getCountLines();
-        var commonGrouped = this.lineCommonGroupedByLegend(orderDirection);
+        var commonGrouped = this.lineCommonGroupedByLegend(orderDirection, legendWeight);
 
         var html  = '';
 
