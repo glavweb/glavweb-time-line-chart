@@ -337,7 +337,7 @@
      * @returns {string}
      */
     GlavwebTimeLineChart.prototype.getHtmlTimeBarStep = function (date, countMinutes, positionLeft) {
-        var hoursAndMinutesString = this.formatHoursAndMinutes(date);
+        var hoursAndMinutesString = this.formatDayToString(date);
         var timeBarStepWidth      = Math.round(parseFloat(countMinutes * this.getMinuteWidth()) * 100) / 100;
 
         if (positionLeft === undefined) {
@@ -389,8 +389,8 @@
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
-                'data-timeline-start-time="' + self.formatHoursAndMinutes(startTime) + '" ' +
-                'data-timeline-end-time="' + self.formatHoursAndMinutes(endTime) + '" ' +
+                'data-timeline-start-time="' + self.formatDayToString(startTime) + '" ' +
+                'data-timeline-end-time="' + self.formatDayToString(endTime) + '" ' +
                 'class="timeline-item timeline-item-' + legend + '" ' +
                 'style="width: ' + width + 'px; display: inline-block;"' +
                 '></span>';
@@ -444,7 +444,7 @@
         var legend, totalMinutes, width;
         $.each(groupedLine, function (key, timePie) {
             legend       = timePie['legend']
-            totalMinutes = timePie['totalMinutes'];
+            totalMinutes = Math.round(parseFloat(timePie['totalMinutes']) * 100) / 100;
             width        = Math.round(parseFloat(totalMinutes * minuteWidth) * 100) / 100;
 
             html += '<span ' +
@@ -483,13 +483,14 @@
 
         var html  = '';
 
-        var legend, totalMinutes, width;
+        var legend, totalMinutes, totalMinutesRound, width;
         $.each(commonGrouped, function (legend, totalMinutes) {
+            totalMinutesRound = Math.round(parseFloat(totalMinutes) * 100) / 100;
             width = Math.round(parseFloat(totalMinutes * minuteWidth) * 100) / 100;
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
-                'data-timeline-total-minutes="' + totalMinutes + '" ' +
+                'data-timeline-total-minutes="' + totalMinutesRound + '" ' +
                 'class="timeline-item timeline-item-' + legend + '" ' +
                 'style="width: ' + width + 'px; display: inline-block;"' +
                 '></span>';
@@ -525,8 +526,8 @@
                 startTimeParse = slice[1].split(':');
                 endTimeParse   = slice[2].split(':');
 
-                sliceStartTime = new Date(1970, 0, 1, startTimeParse[0], startTimeParse[1]);
-                sliceEndTime   = new Date(1970, 0, 1, endTimeParse[0], endTimeParse[1]);
+                sliceStartTime = new Date(1970, 0, 1, startTimeParse[0], startTimeParse[1], (startTimeParse[2] !== undefined ? startTimeParse[2] : 0));
+                sliceEndTime   = new Date(1970, 0, 1, endTimeParse[0], endTimeParse[1], (endTimeParse[2] !== undefined ? endTimeParse[2] : 0));
 
                 if (!slicePrevEndTime) {
                     if (startTime && sliceStartTime > startTime) {
@@ -589,8 +590,8 @@
                 startTimeParse = slice[1].split(':');
                 endTimeParse   = slice[2].split(':');
 
-                sliceStartTime = new Date(1970, 0, 1, startTimeParse[0], startTimeParse[1]);
-                sliceEndTime   = new Date(1970, 0, 1, endTimeParse[0], endTimeParse[1]);
+                sliceStartTime = new Date(1970, 0, 1, startTimeParse[0], startTimeParse[1], (startTimeParse[2] !== undefined ? startTimeParse[2] : 0));
+                sliceEndTime   = new Date(1970, 0, 1, endTimeParse[0], endTimeParse[1], (endTimeParse[2] !== undefined ? endTimeParse[2] : 0));
 
                 // Define start time
                 if (!startTime) {
@@ -623,8 +624,8 @@
      * @param {Date} date
      * @returns {string}
      */
-    GlavwebTimeLineChart.prototype.formatHoursAndMinutes = function (date) {
-        return ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
+    GlavwebTimeLineChart.prototype.formatDayToString = function (date) {
+        return ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2);
     };
 
     /**
