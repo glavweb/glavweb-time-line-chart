@@ -64,7 +64,7 @@
     GlavwebTimeLineChart.prototype.setWidth = function (width) {
         this.width = width;
 
-        this.minuteWidth             = Math.round(parseFloat(width / this.getAllMinutes()) * 100) / 100;
+        this.minuteWidth             = parseFloat(width / this.getAllMinutes());
         this.timeBarStepPositionLeft = 0;
     };
 
@@ -338,7 +338,7 @@
      */
     GlavwebTimeLineChart.prototype.getHtmlTimeBarStep = function (date, countMinutes, positionLeft) {
         var hoursAndMinutesString = this.formatDayToString(date);
-        var timeBarStepWidth      = Math.round(parseFloat(countMinutes * this.getMinuteWidth()) * 100) / 100;
+        var timeBarStepWidth      = Math.round(parseFloat(countMinutes * this.getMinuteWidth()) * 10000) / 10000;
 
         if (positionLeft === undefined) {
             positionLeft = this.timeBarStepPositionLeft;
@@ -385,7 +385,7 @@
             var startTime   = timePie[1];
             var endTime     = timePie[2];
             var diffMinutes = self.countMinutesBetweenDates(startTime, endTime);
-            var width       = Math.round(parseFloat(diffMinutes * minuteWidth) * 100) / 100;
+            var width       = Math.round(parseFloat(diffMinutes * minuteWidth) * 10000) / 10000;
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
@@ -444,8 +444,8 @@
         var legend, totalMinutes, width;
         $.each(groupedLine, function (key, timePie) {
             legend       = timePie['legend']
-            totalMinutes = Math.round(parseFloat(timePie['totalMinutes']) * 100) / 100;
-            width        = Math.round(parseFloat(totalMinutes * minuteWidth) * 100) / 100;
+            totalMinutes = Math.round(parseFloat(timePie['totalMinutes']) * 10000) / 10000;
+            width        = Math.round(parseFloat(totalMinutes * minuteWidth) * 10000) / 10000;
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
@@ -485,8 +485,8 @@
 
         var legend, totalMinutes, totalMinutesRound, width;
         $.each(commonGrouped, function (legend, totalMinutes) {
-            totalMinutesRound = Math.round(parseFloat(totalMinutes) * 100) / 100;
-            width = Math.round(parseFloat(totalMinutes * minuteWidth) * 100) / 100;
+            totalMinutesRound = Math.round(parseFloat(totalMinutes) * 10000) / 10000;
+            width = Math.round(parseFloat(totalMinutes * minuteWidth) * 10000) / 10000;
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
