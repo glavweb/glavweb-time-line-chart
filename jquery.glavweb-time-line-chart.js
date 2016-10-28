@@ -337,7 +337,7 @@
      * @returns {string}
      */
     GlavwebTimeLineChart.prototype.getHtmlTimeBarStep = function (date, countMinutes, positionLeft) {
-        var hoursAndMinutesString = this.formatDayToString(date);
+        var hoursAndMinutesString = this.formatDayToString(date, false);
         var timeBarStepWidth      = Math.round(parseFloat(countMinutes * this.getMinuteWidth()) * 10000) / 10000;
 
         if (positionLeft === undefined) {
@@ -623,10 +623,16 @@
      * Format hours and minutes
      *
      * @param {Date} date
+     * @param {boolean} supportSeconds
      * @returns {string}
      */
-    GlavwebTimeLineChart.prototype.formatDayToString = function (date) {
-        return ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2);
+    GlavwebTimeLineChart.prototype.formatDayToString = function (date, supportSeconds) {
+        supportSeconds = supportSeconds === undefined ? true : false;
+
+        return ('0' + date.getHours()).slice(-2) +
+            ':' + ('0' + date.getMinutes()).slice(-2) +
+            (supportSeconds ? (':' + ('0' + date.getSeconds()).slice(-2)) : '')
+        ;
     };
 
     /**
