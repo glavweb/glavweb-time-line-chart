@@ -102,17 +102,17 @@
         
         // Get grouped object
         var groupByLegend = {};
-        var legend, startTime, endTime, diffMinutes;
+        var legend, startTime, endTime, diffSeconds;
         $.each(line, function (key, timePie) {
             legend      = timePie[0];
             startTime   = timePie[1];
             endTime     = timePie[2];
-            diffMinutes = self.countMinutesBetweenDates(startTime, endTime);
+            diffSeconds = self.countSecondsBetweenDates(startTime, endTime);
 
             if (groupByLegend[legend] === undefined) {
-                groupByLegend[legend] = diffMinutes;
+                groupByLegend[legend] = diffSeconds;
             } else {
-                groupByLegend[legend] += diffMinutes;
+                groupByLegend[legend] += diffSeconds;
             }
         });
 
@@ -122,7 +122,7 @@
         for (item in groupByLegend) {
             orderedArray.push({
                 'legend'       : item,
-                'totalMinutes' : groupByLegend[item]
+                'totalSeconds' : groupByLegend[item]
             });
         }
 
@@ -131,14 +131,14 @@
             switch (orderDirection) {
                 case 'desc':
                     orderedArray.sort(function(a, b) {
-                        return b.totalMinutes - a.totalMinutes;
+                        return b.totalSeconds - a.totalSeconds;
                     });
 
                     break;
 
                 case 'asc':
                     orderedArray.sort(function(a, b) {
-                        return a.totalMinutes - b.totalMinutes;
+                        return a.totalSeconds - b.totalSeconds;
                     });
 
                     break;
@@ -185,13 +185,13 @@
             var groupedLine  = self.groupLineByLegend(line, orderDirection, legendWeight);
 
             $.each(groupedLine, function (key, timePie) {
-                var legend = timePie['legend'];
-                var minutes = timePie['totalMinutes'];
+                var legend  = timePie['legend'];
+                var seconds = timePie['totalSeconds'];
 
                 if (commonGrouped[legend] !== undefined) {
-                    commonGrouped[legend] += minutes;
+                    commonGrouped[legend] += seconds;
                 } else {
-                    commonGrouped[legend] = minutes;
+                    commonGrouped[legend] = seconds;
                 }
             });
         });
@@ -441,15 +441,16 @@
         var groupedLine  = this.groupLineByLegend(line, orderDirection, legendWeight);
 
         var html  = '';
-        var legend, totalMinutes, width;
+        var legend, totalSeconds, totalMinutes, width;
         $.each(groupedLine, function (key, timePie) {
             legend       = timePie['legend']
-            totalMinutes = Math.round(parseFloat(timePie['totalMinutes']) * 10000) / 10000;
+            totalSeconds = timePie['totalSeconds'];
+            totalMinutes = parseFloat(totalSeconds / 60);
             width        = Math.round(parseFloat(totalMinutes * minuteWidth) * 10000) / 10000;
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
-                'data-timeline-total-minutes="' + totalMinutes + '" ' +
+                'data-timeline-total-seconds="' + totalSeconds + '" ' +
                 'class="timeline-item timeline-item-' + legend + '" ' +
                 'style="width: ' + width + 'px; display: inline-block;"' +
                 '></span>';
@@ -483,14 +484,14 @@
 
         var html  = '';
 
-        var legend, totalMinutes, totalMinutesRound, width;
-        $.each(commonGrouped, function (legend, totalMinutes) {
-            totalMinutesRound = Math.round(parseFloat(totalMinutes) * 10000) / 10000;
+        var legend, totalSeconds, totalMinutes, totalMinutesRound, width;
+        $.each(commonGrouped, function (legend, totalSeconds) {
+            totalMinutes = parseFloat(totalSeconds / 60);
             width = Math.round(parseFloat(totalMinutes * minuteWidth) * 10000) / 10000;
 
             html += '<span ' +
                 'data-timeline-legend="' + legend + '" ' +
-                'data-timeline-total-minutes="' + totalMinutesRound + '" ' +
+                'data-timeline-total-seconds="' + totalSeconds + '" ' +
                 'class="timeline-item timeline-item-' + legend + '" ' +
                 'style="width: ' + width + 'px; display: inline-block;"' +
                 '></span>';
@@ -667,6 +668,18 @@
     GlavwebTimeLineChart.prototype.countMinutesBetweenDates = function (startTime, endTime)
     {
         return Math.abs(endTime - startTime) / 60000;
+    };
+
+    /**
+     * Count minutes
+     *
+     * @param {Date} startTime
+     * @param {Date} endTime
+     * @returns {number}
+     */
+    GlavwebTimeLineChart.prototype.countSecondsBetweenDates = function (startTime, endTime)
+    {
+        return Math.abs(endTime - startTime) / 1000;
     };
 
     /**
